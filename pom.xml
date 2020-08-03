@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>dev.jbang</groupId>
+    <artifactId>jbang-embedded-maven-example</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <name>j'bang embedded</name>
+    <description>An example project that demonstrates how to install and run j'bang from maven without requiring any installation.
+        Note the embedded j'bang will use any configuration and caches already present in the running environment.</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <jbang.version>0.36.1</jbang.version>
+        <!-- Alternatively, use `.jbang` to install in the project to avoid unpacking on clean builds -->
+        <jbang.install.path>target/jbang-installation</jbang.install.path>
+        <jbang.scripts.path>${project.basedir}/.jbang</jbang.scripts.path>
+    </properties>
+
+    <build>
+        <defaultGoal>process-resources</defaultGoal>
+        <plugins>
+            <plugin>
+                <groupId>com.googlecode.maven-download-plugin</groupId>
+                <artifactId>download-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <id>install-jbang</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://github.com/jbangdev/jbang/releases/download/v${jbang.version}/jbang-${jbang.version}.zip</url>
+                            <unpack>true</unpack>
+                            <outputDirectory>${jbang.install.path}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>jbang-run</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>${jbang.install.path}/jbang-${jbang.version}/bin/jbang</executable>
+                    <workingDirectory>${jbang.scripts.path}</workingDirectory>
+                    <arguments>
+                        <argument>run</argument>
+                        <!-- Uncomment to use native compilation/execution.
+                        Requires GraalVM with `native-image` component installed -->
+                        <!-- <argument>-n</argument>-->
+                        <argument>HelloWorld.java</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

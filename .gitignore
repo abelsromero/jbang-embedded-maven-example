@@ -1,0 +1,12 @@
+# eclipse/vscode
+.classpath
+.project
+.vscode
+.settings
+# maven
+target
+# IntelliJ Idea
+.idea
+*.iml
+# jbang installations
+.jbang/jbang-*

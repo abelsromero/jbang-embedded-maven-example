@@ -1,0 +1,22 @@
+= j'bang embedded maven example
+
+An example project that demonstrates how to install and run j'bang from maven without requiring any installation.
+
+NOTE: The embedded j'bang will use any configuration and caches already present in the running environment.
+
+== Advantages
+
+* No manual j'bang installation required.
+* Fixed j'bang version, useful for stable and reproducible builds.
+
+== Example description
+
+The build uses two Maven plugins to install and run jbang from local project directories:
+
+. `com.googlecode.maven-download-plugin:download-maven-plugin`:
+downloads j'bang from https://github.com/jbangdev/jbang/releases[GitHub's releases].
+The zip file is cached locally in the local Maven repo, and extracted inside `target` to avoid problems with sources.
+If you prefer to see it and to avoid unpacking on clean builds, the package can be extracted under `.jbang`.
+Just remember to add `.jbang/jbang-*` to `.gitignore`.
+. `org.codehaus.mojo:exec-maven-plugin`::
+executes local j'bang version directly from the installed path.
